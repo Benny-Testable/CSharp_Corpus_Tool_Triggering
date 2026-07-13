@@ -2,8 +2,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderKit.Domain", "src\OrderKit.Domain\OrderKit.Domain.csproj", "{04F85DEF-749D-547D-B999-6E36B341B85F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderKit.Contracts", "src\OrderKit.Contracts\OrderKit.Contracts.csproj", "{D596BE75-051D-E197-1CE5-653AF085D6A2}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderKit.Pricing", "src\Services\OrderKit.Pricing\OrderKit.Pricing.csproj", "{02BCD1F9-0452-A747-5A8B-1BB7DACBBEDE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderKit.Risk", "src\Services\OrderKit.Risk\OrderKit.Risk.csproj", "{DCDFF5F1-9C55-43CC-0D01-77E97FEA1A69}"
@@ -22,10 +20,6 @@ Global
 		{04F85DEF-749D-547D-B999-6E36B341B85F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04F85DEF-749D-547D-B999-6E36B341B85F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04F85DEF-749D-547D-B999-6E36B341B85F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D596BE75-051D-E197-1CE5-653AF085D6A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D596BE75-051D-E197-1CE5-653AF085D6A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D596BE75-051D-E197-1CE5-653AF085D6A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D596BE75-051D-E197-1CE5-653AF085D6A2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{02BCD1F9-0452-A747-5A8B-1BB7DACBBEDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{02BCD1F9-0452-A747-5A8B-1BB7DACBBEDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02BCD1F9-0452-A747-5A8B-1BB7DACBBEDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
