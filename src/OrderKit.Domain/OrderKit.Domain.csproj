@@ -6,8 +6,14 @@
     <RootNamespace>OrderKit</RootNamespace>
   </PropertyGroup>
 
-  <ItemGroup>
+  <!-- Versions are declared once, in Directory.Packages.props. Central Package Management
+       is switched off only when analysis tooling replaces Directory.Build.props (it adds
+       versioned PackageReference items of its own); the second group then supplies versions. -->
+  <ItemGroup Condition="'$(ManagePackageVersionsCentrally)' == 'true'">
     <PackageReference Include="System.Text.RegularExpressions" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(ManagePackageVersionsCentrally)' != 'true'">
+    <PackageReference Include="System.Text.RegularExpressions" Version="$(SystemTextRegularExpressionsVersion)" />
   </ItemGroup>
 
 </Project>

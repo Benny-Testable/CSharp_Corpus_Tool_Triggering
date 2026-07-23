@@ -7,11 +7,20 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <ItemGroup>
+  <!-- Versions are declared once, in Directory.Packages.props. Central Package Management
+       is switched off only when analysis tooling replaces Directory.Build.props (it adds
+       versioned PackageReference items of its own); the second group then supplies versions. -->
+  <ItemGroup Condition="'$(ManagePackageVersionsCentrally)' == 'true'">
     <PackageReference Include="NUnit" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NUnit3TestAdapter" />
     <PackageReference Include="coverlet.collector" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(ManagePackageVersionsCentrally)' != 'true'">
+    <PackageReference Include="NUnit" Version="$(NUnitVersion)" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkVersion)" />
+    <PackageReference Include="NUnit3TestAdapter" Version="$(NUnitAdapterVersion)" />
+    <PackageReference Include="coverlet.collector" Version="$(CoverletVersion)" />
   </ItemGroup>
 
   <ItemGroup>

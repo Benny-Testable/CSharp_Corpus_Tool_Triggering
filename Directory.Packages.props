@@ -1,14 +1,28 @@
 <Project>
+
   <PropertyGroup>
-    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- Central Package Management. It is off only when analysis tooling injects its own
+         Directory.Build.props (a versioned PackageReference per analyzer); see the note in each project file. -->
+    <ManagePackageVersionsCentrally Condition="'$(DirectoryBuildPropsPath)' == '' And !Exists('$(MSBuildThisFileDirectory)Directory.Build.props')">true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
+
+  <PropertyGroup Label="Package versions">
+    <NewtonsoftJsonVersion>12.0.3</NewtonsoftJsonVersion>
+    <SystemTextRegularExpressionsVersion>4.3.0</SystemTextRegularExpressionsVersion>
+    <NUnitVersion>3.13.3</NUnitVersion>
+    <TestSdkVersion>17.2.0</TestSdkVersion>
+    <NUnitAdapterVersion>4.6.0</NUnitAdapterVersion>
+    <CoverletVersion>6.0.2</CoverletVersion>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageVersion Include="Newtonsoft.Json" Version="12.0.3" />
-    <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.0" />
-    <PackageVersion Include="NUnit" Version="3.13.3" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
-    <PackageVersion Include="NUnit3TestAdapter" Version="4.6.0" />
-    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+    <PackageVersion Include="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
+    <PackageVersion Include="System.Text.RegularExpressions" Version="$(SystemTextRegularExpressionsVersion)" />
+    <PackageVersion Include="NUnit" Version="$(NUnitVersion)" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkVersion)" />
+    <PackageVersion Include="NUnit3TestAdapter" Version="$(NUnitAdapterVersion)" />
+    <PackageVersion Include="coverlet.collector" Version="$(CoverletVersion)" />
   </ItemGroup>
+
 </Project>
