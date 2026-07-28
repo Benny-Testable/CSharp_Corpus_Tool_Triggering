@@ -4,112 +4,83 @@ using System.Linq;
 
 namespace OrderKit;
 
-public sealed class Order : IPriceable
+public sealed class Order
 {
-    private readonly List<OrderLine> _lines = new();
+    private readonly List<OrderLine> _lines = new List<OrderLine>();
     private string _customerTier;
-    private string _cachedKey;
 
     public Order(string id, string customerTier)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
-        _customerTier = string.IsNullOrWhiteSpace(customerTier) ? "standard" : customerTier;
+        _customerTier = Normalize(customerTier);
     }
 
     public string Id { get; }
-    public OrderStatus Status { get; set; } = OrderStatus.Draft;
+
+    public OrderStatus Status { get; private set; } = OrderStatus.Draft;
 
     public string CustomerTier
     {
         get => _customerTier;
-        set => _customerTier = string.IsNullOrWhiteSpace(value) ? "standard" : value;
+        set => _customerTier = Normalize(value);
     }
 
-    public IList<OrderLine> Lines => _lines.ToList();
+    public IReadOnlyList<OrderLine> Lines => _lines.AsReadOnly();
 
-    public void AddLine(OrderLine line) =>
-        _lines.Add(line ?? throw new ArgumentNullException(nameof(line)));
+    public bool TryMoveTo(OrderStatus next)
+    {
+        if (!Status.CanMoveTo(next))
+        {
+            return false;
+        }
+
+        Status = next;
+        return true;
+    }
+
+    public void AddLine(OrderLine line)
+    {
+        if (line == null) throw new ArgumentNullException(nameof(line));
+
+        _lines.Add(line);
+    }
 
     public bool IsEmpty() => _lines.Count == 0;
 
     public int LineCount() => _lines.Count;
 
+    public int TotalQuantity()
+    {
+        int total = 0;
+        foreach (OrderLine line in _lines)
+        {
+            total += line.Quantity;
+        }
+
+        return total;
+    }
+
     public long SubtotalCents()
     {
-        Func<OrderLine, long> extend = static l => l.ExtendedCents();
-
-        long total = default;
-        foreach (OrderLine l in _lines)
+        long total = 0;
+        foreach (OrderLine line in _lines)
         {
-            total += extend(l);
+            total += line.ExtendedCents();
         }
+
         return total;
     }
 
     public IEnumerable<string> DistinctCategories() =>
-        _lines.Select(l => l.Category).Where(c => c != null).Distinct().OrderBy(c => c);
+        _lines.Select(l => l.Category).Distinct().OrderBy(c => c, StringComparer.Ordinal);
 
-    public int TotalQuantity()
-    {
-        int total = 0;
-        foreach (OrderLine l in _lines)
-        {
-            total += l.Quantity;
-        }
-        return total;
-    }
+    public bool HasCategory(string category) =>
+        _lines.Any(l => string.Equals(l.Category, category, StringComparison.Ordinal));
 
-    public bool HasCategory(string category) => _lines.Any(l => l.Category == category);
+    public string FirstSku() => _lines.Count == 0 ? null : _lines[0].Sku;
 
-    public string FirstSku() => _lines.FirstOrDefault()?.Sku;
+    public string Describe() => $"{Id}: {_lines.Count} lines, {SubtotalCents()}c, {Status.Label()}";
 
-    public OrderLine LastLine() => _lines.Count == 0 ? null : _lines.ToArray()[^1];
-
-    public IList<OrderLine> FirstTwo() =>
-        _lines.Count <= 2 ? _lines.ToList() : _lines.ToArray()[0..2].ToList();
-
-    public string CachedKey()
-    {
-        _cachedKey ??= $"order:{Id}";
-        return _cachedKey;
-    }
-
-    public IList<OrderLine> Snapshot()
-    {
-        List<OrderLine> copy = new(_lines);
-        return copy;
-    }
-
-    /// <summary>A COLLECTION EXPRESSION: the target type decides the construction,
-    /// and the spread splices an existing sequence in.</summary>
-    public IReadOnlyList<string> Tags(params string[] extra)
-    {
-        string[] tags = [CustomerTier, Status.Label(), .. (extra ?? Array.Empty<string>())];
-        return tags;
-    }
-
-    /// <summary>A DEFAULT LAMBDA PARAMETER: the default lives on the lambda, not on
-    /// a wrapper method. The parameters must be EXPLICITLY typed -- CS9098 rejects a
-    /// default on an implicitly typed lambda parameter, and the first draft here got
-    /// that wrong on twelve branches before the parse gate caught it.</summary>
-    public long RoundedSubtotal()
-    {
-        Func<long, int, long> round = (long cents, int unit = 100) => (cents / unit) * unit;
-        return round(SubtotalCents(), 100);
-    }
-
-    public string Describe()
-    {
-        int lines = LineCount();
-        long cents = SubtotalCents();
-        var summary = (lines, cents);
-        return $"{Id}: {summary.lines} lines, {summary.cents}c, {Status.Label()}";
-    }
-
-    public long BaseCents() => SubtotalCents();
-
-    public string PricingKey() => $"order:{Id}";
-
-    public override string ToString() =>
-        $"Order({Id}, {_lines.Count} lines, {Status.Label()})";
+    private static string Normalize(string tier) =>
+        string.IsNullOrWhiteSpace(tier) ? "standard" : tier.Trim().ToLowerInvariant();
 }
