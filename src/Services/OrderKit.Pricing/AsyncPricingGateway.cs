@@ -2,38 +2,32 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace OrderKit
+namespace OrderKit;
+
+/// <summary>Async facade over <see cref="PricingService"/> for callers on a request pipeline.</summary>
+public sealed class AsyncPricingGateway
 {
-    /// <summary>
-    /// The family's parse-time language lock. async/await is C# 5; one language
-    /// version below, csc reports:
-    ///   error CS8025: Feature 'async function' is not available in C# 4.
-    /// Verified by execution, not asserted -- see tools/full_check.py.
-    /// </summary>
-    public sealed class AsyncPricingGateway
+    private readonly PricingService _pricing;
+
+    public AsyncPricingGateway(PricingService pricing)
     {
-        private readonly PricingService _pricing;
+        _pricing = pricing ?? throw new ArgumentNullException(nameof(pricing));
+    }
 
-        public AsyncPricingGateway(PricingService pricing)
+    public async Task<long> PriceAsync(Order order, string region)
+    {
+        await Task.Delay(1).ConfigureAwait(false);
+        return _pricing.PriceCents(order, region, false, 0);
+    }
+
+    public async Task<long> PriceBatchAsync(IEnumerable<Order> orders, string region)
+    {
+        long total = 0;
+        foreach (Order order in orders)
         {
-            if (pricing == null) throw new ArgumentNullException("pricing");
-            _pricing = pricing;
+            total += await PriceAsync(order, region).ConfigureAwait(false);
         }
 
-        public async Task<long> PriceAsync(Order order, string region)
-        {
-            await Task.Delay(1).ConfigureAwait(false);
-            return _pricing.PriceCents(order, region, false, 0);
-        }
-
-        public async Task<long> PriceBatchAsync(IEnumerable<Order> orders, string region)
-        {
-            long total = 0;
-            foreach (Order order in orders)
-            {
-                total += await PriceAsync(order, region).ConfigureAwait(false);
-            }
-            return total;
-        }
+        return total;
     }
 }
