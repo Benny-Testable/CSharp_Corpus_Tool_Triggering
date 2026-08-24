@@ -42,7 +42,15 @@ public sealed class Order
     {
         if (line == null) throw new ArgumentNullException(nameof(line));
 
-        _lines.Add(line);
+        int index = _lines.FindIndex(l => string.Equals(l.Sku, line.Sku, StringComparison.Ordinal));
+        if (index < 0)
+        {
+            _lines.Add(line);
+        }
+        else
+        {
+            _lines[index] = _lines[index].WithQuantity(_lines[index].Quantity + line.Quantity);
+        }
     }
 
     public bool IsEmpty() => _lines.Count == 0;

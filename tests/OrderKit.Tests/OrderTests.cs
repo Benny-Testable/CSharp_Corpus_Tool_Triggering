@@ -63,6 +63,16 @@ namespace OrderKit.Tests
         }
 
         [Test]
+        public void AddingTheSameSkuMergesQuantities()
+        {
+            Order o = Sample();
+            o.AddLine(new OrderLine("SKU-1", 3, 500L, "general"));
+            Assert.AreEqual(2, o.LineCount());
+            Assert.AreEqual(5, o.Lines[0].Quantity);
+            Assert.AreEqual(4000L, o.SubtotalCents());
+        }
+
+        [Test]
         public void CategoriesAreDistinctAndSorted()
         {
             Order o = Sample();
