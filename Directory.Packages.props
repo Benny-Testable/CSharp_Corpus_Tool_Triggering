@@ -10,6 +10,7 @@
   <PropertyGroup Label="Package versions">
     <NewtonsoftJsonVersion>12.0.3</NewtonsoftJsonVersion>
     <SystemTextRegularExpressionsVersion>4.3.0</SystemTextRegularExpressionsVersion>
+    <SystemDataSqlClientVersion>4.8.3</SystemDataSqlClientVersion>
     <NUnitVersion>3.13.3</NUnitVersion>
     <TestSdkVersion>17.2.0</TestSdkVersion>
     <NUnitAdapterVersion>4.6.0</NUnitAdapterVersion>
@@ -19,6 +20,7 @@
   <ItemGroup>
     <PackageVersion Include="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="$(SystemTextRegularExpressionsVersion)" />
+    <PackageVersion Include="System.Data.SqlClient" Version="$(SystemDataSqlClientVersion)" />
     <PackageVersion Include="NUnit" Version="$(NUnitVersion)" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="$(TestSdkVersion)" />
     <PackageVersion Include="NUnit3TestAdapter" Version="$(NUnitAdapterVersion)" />
