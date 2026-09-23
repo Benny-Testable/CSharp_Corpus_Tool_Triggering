@@ -90,5 +90,5 @@ public sealed class Order
     public string Describe() => $"{Id}: {_lines.Count} lines, {SubtotalCents()}c, {Status.Label()}";
 
     private static string Normalize(string tier) =>
-        string.IsNullOrWhiteSpace(tier) ? "standard" : tier.Trim().ToLowerInvariant();
+        string.IsNullOrWhiteSpace(tier) ? "standard" : CustomerTierParser.Parse(tier);
 }

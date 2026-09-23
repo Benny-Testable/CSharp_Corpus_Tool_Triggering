@@ -37,6 +37,12 @@ namespace OrderKit.Tests
         }
 
         [Test]
+        public void UnknownCustomerTierFallsBackToStandard()
+        {
+            Assert.AreEqual("standard", new Order("A-6", "vip").CustomerTier);
+        }
+
+        [Test]
         public void NewOrderIsADraftWithNoLines()
         {
             Order o = new Order("A-2", null);
