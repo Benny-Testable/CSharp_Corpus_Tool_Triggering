@@ -19,6 +19,45 @@ public sealed class RiskScorer
 
     public int Score(Order order, string region, IList<string> flags)
     {
+        return LineScore(order, region) + FlagScore(flags);
+    }
+
+    /// <summary>Exception filters let the catch decline without unwinding.</summary>
+    public int ScoreOrDefault(Order order, string region, IList<string> flags)
+    {
+        try
+        {
+            return Score(order, region, flags);
+        }
+        catch (ArgumentException ex) when (ex.ParamName == "region")
+        {
+            return 0;
+        }
+    }
+
+    public bool IsHighRisk(Order order, string region, IList<string> flags) =>
+        Score(order, region, flags) >= 60;
+
+    public int ScoreAny(IEnumerable<object> items)
+    {
+        int score = 0;
+        foreach (object item in items ?? new object[0])
+        {
+            if (item is Order order)
+            {
+                score += Score(order, null, null);
+            }
+            else if (item is int raw)
+            {
+                score += raw;
+            }
+        }
+
+        return Math.Min(score, MaxScore);
+    }
+
+    private int LineScore(Order order, string region)
+    {
         int score = 0;
         if (order != null)
         {
@@ -62,6 +101,12 @@ public sealed class RiskScorer
             }
         }
 
+        return score;
+    }
+
+    private static int FlagScore(IList<string> flags)
+    {
+        int score = 0;
         if (flags != null)
         {
             foreach (string flag in flags)
@@ -80,40 +125,6 @@ public sealed class RiskScorer
             }
         }
 
-        return Math.Min(score, MaxScore);
-    }
-
-    /// <summary>Exception filters let the catch decline without unwinding.</summary>
-    public int ScoreOrDefault(Order order, string region, IList<string> flags)
-    {
-        try
-        {
-            return Score(order, region, flags);
-        }
-        catch (ArgumentException ex) when (ex.ParamName == "region")
-        {
-            return 0;
-        }
-    }
-
-    public bool IsHighRisk(Order order, string region, IList<string> flags) =>
-        Score(order, region, flags) >= 60;
-
-    public int ScoreAny(IEnumerable<object> items)
-    {
-        int score = 0;
-        foreach (object item in items ?? new object[0])
-        {
-            if (item is Order order)
-            {
-                score += Score(order, null, null);
-            }
-            else if (item is int raw)
-            {
-                score += raw;
-            }
-        }
-
-        return Math.Min(score, MaxScore);
+        return score;
     }
 }

@@ -64,14 +64,10 @@ public sealed class PricingService
 
         if (expedited)
         {
-            if (order.LineCount() > 20) total += 4_000L;
-            else if (order.LineCount() > 10) total += 2_500L;
-            else total += 1_500L;
+            total += ExpediteFee(order.LineCount());
         }
 
-        if (loyaltyYears >= 10) total -= 1_000L;
-        else if (loyaltyYears >= 5) total -= 500L;
-        else if (loyaltyYears >= 2) total -= 200L;
+        total -= LoyaltyCredit(loyaltyYears);
 
         // A local function keeps the floor lookup beside its only caller.
         long Shortfall(OrderLine line)
@@ -103,4 +99,19 @@ public sealed class PricingService
 
     public long FloorFor(string category) =>
         !string.IsNullOrEmpty(category) && _categoryFloor.TryGetValue(category, out long floor) ? floor : 0L;
+
+    private static long ExpediteFee(int lineCount)
+    {
+        if (lineCount > 20) return 4_000L;
+        if (lineCount > 10) return 2_500L;
+        return 1_500L;
+    }
+
+    private static long LoyaltyCredit(int years)
+    {
+        if (years >= 10) return 1_000L;
+        if (years > 5) return 500L;
+        if (years >= 2) return 200L;
+        return 0L;
+    }
 }
