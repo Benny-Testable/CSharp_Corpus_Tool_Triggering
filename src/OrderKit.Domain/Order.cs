@@ -49,6 +49,18 @@ public sealed class Order : IPriceable
     public IEnumerable<string> DistinctCategories() =>
         _lines.Select(l => l.Category).Distinct().OrderBy(c => c);
 
+    public int TotalQuantity()
+    {
+        int total = 0;
+        foreach (OrderLine l in _lines)
+        {
+            total += l.Quantity;
+        }
+        return total;
+    }
+
+    public bool HasCategory(string category) => _lines.Any(l => l.Category == category);
+
     public string FirstSku() => _lines.FirstOrDefault()?.Sku;
 
     public OrderLine LastLine() => _lines.Count == 0 ? null : _lines.ToArray()[^1];
