@@ -99,6 +99,14 @@ namespace OrderKit
             return total;
         }
 
+        public long ApplyPromo(long totalCents, string code)
+        {
+            if (code == null) return totalCents;
+            if (code == "WELCOME10") return totalCents - (totalCents / 10);
+            if (code == "BULK5" && totalCents > LargeOrderCents) return totalCents - (totalCents / 20);
+            return totalCents;
+        }
+
         /// <summary>`in` parameters: read-only references, no defensive copy.</summary>
         public static long Combine(in long a, in long b) => a + b;
 
