@@ -29,6 +29,8 @@ namespace OrderKit
             if (order == null) throw new ArgumentNullException(nameof(order));
             if (order.IsEmpty()) return 0L;
 
+            if (loyaltyYears < 0) loyaltyYears = 0;
+
             long total = order.SubtotalCents();
 
             if (order.CustomerTier == "platinum")
