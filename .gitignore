@@ -7,3 +7,8 @@ reports/
 paket-files/
 .cake/
 tools/Cake*/
+
+# test results
+TestResults/
+*.trx
+coverage*/
