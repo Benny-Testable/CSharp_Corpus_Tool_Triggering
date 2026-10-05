@@ -110,7 +110,7 @@ public sealed class PricingService
     private static long LoyaltyCredit(int years)
     {
         if (years >= 10) return 1_000L;
-        if (years > 5) return 500L;
+        if (years >= 5) return 500L;
         if (years >= 2) return 200L;
         return 0L;
     }

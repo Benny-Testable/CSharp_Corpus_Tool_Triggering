@@ -113,6 +113,12 @@ namespace OrderKit.Tests
             Assert.AreEqual(expected, _svc.PriceCents(Order10K(), "domestic", false, years));
         }
 
+        [Test]
+        public void FiveYearsOfLoyaltyEarnTheFiveYearCredit()
+        {
+            Assert.AreEqual(9_750L, _svc.PriceCents(Order10K(), "domestic", false, 5));
+        }
+
         [TestCase("hazmat", 1_000L, 2_750L)]
         [TestCase("fragile", 500L, 1_150L)]
         [TestCase("bulk", 40L, 350L)]
