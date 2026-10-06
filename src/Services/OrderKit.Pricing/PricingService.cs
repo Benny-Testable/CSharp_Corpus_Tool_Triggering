@@ -116,6 +116,6 @@ namespace OrderKit
 
         /// <summary>An out variable declared inline in the condition.</summary>
         public long FloorFor(string category) =>
-            category != null && _categoryFloor.TryGetValue(category, out long floor) ? floor : 0L;
+            !string.IsNullOrEmpty(category) && _categoryFloor.TryGetValue(category, out long floor) ? floor : 0L;
     }
 }
