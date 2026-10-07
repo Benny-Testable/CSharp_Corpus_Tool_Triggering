@@ -70,6 +70,13 @@ namespace OrderKit
             return false;
         }
 
+        public static string Truncate(string value, int max)
+        {
+            if (value == null) return "";
+            if (max <= 0) return "";
+            return value.Length <= max ? value : value.Substring(0, max);
+        }
+
         /// <summary>Null-conditional propagation: another lock this family gains.</summary>
         public static int SafeLength(string value) => value?.Length ?? 0;
     }
