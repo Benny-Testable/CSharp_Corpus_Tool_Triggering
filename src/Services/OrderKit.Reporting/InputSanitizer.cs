@@ -26,7 +26,7 @@ namespace OrderKit
         public static string BuildReportPath(string root, string reportName)
         {
             if (root == null) throw new ArgumentNullException(nameof(root));
-            return root.TrimEnd('/') + "/" + reportName;
+            return root.TrimEnd('/') + "/" + (reportName ?? "");
         }
 
         /// <summary>Flow 4: collection element -> command assembly.</summary>
