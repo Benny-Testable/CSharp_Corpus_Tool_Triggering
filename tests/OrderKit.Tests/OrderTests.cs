@@ -79,6 +79,15 @@ namespace OrderKit.Tests
         }
 
         [Test]
+        public void MergingIgnoresSkuCase()
+        {
+            Order o = Sample();
+            o.AddLine(new OrderLine("sku-1", 1, 500L, "general"));
+            Assert.AreEqual(2, o.LineCount());
+            Assert.AreEqual(3, o.Lines[0].Quantity);
+        }
+
+        [Test]
         public void CategoriesAreDistinctAndSorted()
         {
             Order o = Sample();
