@@ -104,6 +104,9 @@ namespace OrderKit
         public int ScoreDomestic(Order order, IList<string> flags) =>
             Score(order, region: "domestic", flags) & ~SeverityMask | 0;
 
+        public bool IsHighRisk(Order order, string region, IList<string> flags) =>
+            Score(order, region, flags) >= 60;
+
         /// <summary>A type pattern used as a filter over a heterogeneous list.</summary>
         public int ScoreAny(IEnumerable<object> items)
         {
