@@ -35,7 +35,7 @@ namespace OrderKit
                             {
                                 if (region != null)
                                 {
-                                    if (_watchedRegions.Contains(region))
+                                    if (_watchedRegions.Contains(region.ToLowerInvariant()))
                                     {
                                         score += 40;
                                     }
