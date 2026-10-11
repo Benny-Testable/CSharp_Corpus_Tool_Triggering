@@ -47,7 +47,7 @@ public sealed class Order : IPriceable
     }
 
     public IEnumerable<string> DistinctCategories() =>
-        _lines.Select(l => l.Category).Distinct().OrderBy(c => c);
+        _lines.Select(l => l.Category).Where(c => c != null).Distinct().OrderBy(c => c);
 
     public int TotalQuantity()
     {
