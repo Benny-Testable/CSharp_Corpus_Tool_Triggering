@@ -28,6 +28,7 @@ namespace OrderKit
         {
             if (order == null) throw new ArgumentNullException(nameof(order));
             if (order.IsEmpty()) return 0L;
+            region = region?.Trim();
 
             if (loyaltyYears < 0) loyaltyYears = 0;
 
