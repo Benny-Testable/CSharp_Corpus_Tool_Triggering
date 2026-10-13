@@ -55,6 +55,14 @@ namespace OrderKit.Tests
         }
 
         [Test]
+        public void NonPositiveAllocationsAreRejected()
+        {
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ledger.TryAllocate("ABC-0001", 0));
+            Assert.Throws<ArgumentOutOfRangeException>(() => _ledger.TryAllocate("ABC-0001", -5));
+            Assert.AreEqual(10, _ledger.OnHand("ABC-0001"));
+        }
+
+        [Test]
         public void ReleasePutsStockBack()
         {
             _ledger.TryAllocate("ABC-0001", 6);
@@ -73,6 +81,16 @@ namespace OrderKit.Tests
             Assert.AreEqual(new[] { "ABC-0002" }, shortages);
             Assert.AreEqual(7, _ledger.OnHand("ABC-0001"));
             Assert.AreEqual(1, _ledger.TotalShortfalls);
+        }
+
+        [Test]
+        public void AllocateOrderFlagsZeroQuantityLinesAsInvalid()
+        {
+            Order order = new Order("S-2", null);
+            order.AddLine(new OrderLine("ABC-0001", 0, 100L, "general"));
+            var shortages = _ledger.AllocateOrder(order);
+            Assert.AreEqual(new[] { "ABC-0001:invalid" }, shortages);
+            Assert.AreEqual(10, _ledger.OnHand("ABC-0001"));
         }
 
         [Test]

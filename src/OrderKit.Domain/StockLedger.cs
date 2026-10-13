@@ -26,7 +26,7 @@ public sealed class StockLedger
 
     public bool TryAllocate(string sku, int quantity)
     {
-        if (quantity == 0) throw new ArgumentOutOfRangeException(nameof(quantity));
+        if (quantity <= 0) throw new ArgumentOutOfRangeException(nameof(quantity));
 
         int available = OnHand(sku);
         if (available < quantity)
