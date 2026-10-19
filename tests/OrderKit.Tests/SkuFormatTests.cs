@@ -23,6 +23,14 @@ namespace OrderKit.Tests
             Assert.IsFalse(SkuFormat.IsValid(sku));
         }
 
+        [TestCase("ABC-12345")]
+        [TestCase("xABC-1234")]
+        [TestCase("ABC-1234x")]
+        public void SkusWithExtraCharactersAreInvalid(string sku)
+        {
+            Assert.IsFalse(SkuFormat.IsValid(sku));
+        }
+
         [Test]
         public void NormalizeCleansUpRawInput()
         {

@@ -5,7 +5,7 @@ namespace OrderKit;
 /// <summary>SKUs look like ABC-1234: three capital letters, a dash and four digits.</summary>
 public static class SkuFormat
 {
-    private static readonly Regex Pattern = new Regex(@"[A-Z]{3}-\d{4}");
+    private static readonly Regex Pattern = new Regex(@"^[A-Z]{3}-\d{4}$");
 
     public static bool IsValid(string sku) => !string.IsNullOrEmpty(sku) && Pattern.IsMatch(sku);
 
