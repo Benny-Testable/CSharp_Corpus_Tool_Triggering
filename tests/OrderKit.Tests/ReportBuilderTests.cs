@@ -35,6 +35,15 @@ namespace OrderKit.Tests
         }
 
         [Test]
+        public void WeeklyReportIncludesTheLastOrder()
+        {
+            Order only = new Order("W-1", null);
+            only.AddLine(new OrderLine("S-1", 1, 700L, "general"));
+            string report = new ReportBuilder().BuildWeekly(new List<Order> { only }, "Week");
+            Assert.AreEqual(("# Week\nW-1,draft,700\norders=1,total=700\n").Replace("\n", Nl), report);
+        }
+
+        [Test]
         public void EmptyListGivesOnlyTheHeaderAndTotals()
         {
             Assert.AreEqual("# T\norders=0,total=0\n".Replace("\n", Nl), new ReportBuilder().BuildDaily(new List<Order>(), "T"));

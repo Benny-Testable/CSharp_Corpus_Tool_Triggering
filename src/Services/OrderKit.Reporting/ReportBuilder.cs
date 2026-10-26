@@ -38,7 +38,7 @@ public sealed class ReportBuilder
         sb.Append("# ").Append(title).AppendLine();
         long total = 0;
         int count = 0;
-        for (int i = 0; i < orders.Count - 1; i++)
+        for (int i = 0; i < orders.Count; i++)
         {
             Order order = orders[i];
             if (order == null || order.IsEmpty()) continue;
