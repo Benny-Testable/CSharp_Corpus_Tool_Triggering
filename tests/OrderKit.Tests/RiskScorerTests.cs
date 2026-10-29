@@ -62,6 +62,19 @@ namespace OrderKit.Tests
         }
 
         [Test]
+        public void ScoreIsCappedAtOneHundred()
+        {
+            Order o = new Order("R-2", null);
+            for (int i = 0; i < 20; i++)
+            {
+                o.AddLine(new OrderLine("H-" + i, 50, 100L, "hazmat"));
+            }
+
+            Assert.AreEqual(100, _scorer.Score(o, "sanctioned", null));
+            Assert.AreEqual(100, _scorer.Score(null, null, new List<string> { "hard-1", "hard-2", "hard-3", "hard-4", "hard-5", "hard-6" }));
+        }
+
+        [Test]
         public void HighRiskStartsAtSixty()
         {
             Order o = One("hazmat", 20);
@@ -81,6 +94,12 @@ namespace OrderKit.Tests
         {
             Assert.AreEqual(32, _scorer.ScoreAny(new object[] { One("hazmat", 20), 7, "text" }));
             Assert.AreEqual(0, _scorer.ScoreAny(null));
+        }
+
+        [Test]
+        public void ScoreAnyIsCappedToo()
+        {
+            Assert.AreEqual(100, _scorer.ScoreAny(new object[] { 90, 90 }));
         }
     }
 }

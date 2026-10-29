@@ -19,7 +19,8 @@ public sealed class RiskScorer
 
     public int Score(Order order, string region, IList<string> flags)
     {
-        return LineScore(order, region) + FlagScore(flags);
+        int score = LineScore(order, region) + FlagScore(flags);
+        return Math.Min(score, MaxScore);
     }
 
     /// <summary>Exception filters let the catch decline without unwinding.</summary>
