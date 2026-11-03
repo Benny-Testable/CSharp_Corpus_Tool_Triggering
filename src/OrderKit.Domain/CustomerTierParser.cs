@@ -4,6 +4,11 @@ public static class CustomerTierParser
 {
     public static string Parse(string raw)
     {
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            return "standard";
+        }
+
         switch (raw.Trim().ToLowerInvariant())
         {
             case "silver":

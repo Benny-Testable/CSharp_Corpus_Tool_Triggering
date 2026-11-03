@@ -16,6 +16,12 @@ namespace OrderKit.Tests
             Assert.AreEqual(expected, CustomerTierParser.Parse(raw));
         }
 
+        [Test]
+        public void NullParsesAsStandard()
+        {
+            Assert.AreEqual("standard", CustomerTierParser.Parse(null));
+        }
+
         [TestCase("silver", 2)]
         [TestCase("gold", 5)]
         [TestCase("platinum", 10)]
