@@ -137,5 +137,27 @@ namespace OrderKit.Tests
             o.AddLine(new OrderLine("SKU-1", 1, 1L, "general"));
             Assert.AreEqual(0L, _svc.PriceCents(o, "domestic", false, 20));
         }
+
+        [Test]
+        public void PromoCodes()
+        {
+            Assert.AreEqual(900L, _svc.ApplyPromo(1000L, "WELCOME10"));
+            Assert.AreEqual(1000L, _svc.ApplyPromo(1000L, null));
+            Assert.AreEqual(1000L, _svc.ApplyPromo(1000L, "UNKNOWN"));
+            Assert.AreEqual(190_000L, _svc.ApplyPromo(200_000L, "BULK5"));
+            Assert.AreEqual(100_000L, _svc.ApplyPromo(100_000L, "BULK5"));
+        }
+
+        [Test]
+        public void FloorsByCategory()
+        {
+            Assert.AreEqual(2500L, _svc.FloorFor("hazmat"));
+            Assert.AreEqual(900L, _svc.FloorFor("fragile"));
+            Assert.AreEqual(100L, _svc.FloorFor("bulk"));
+            Assert.AreEqual(0L, _svc.FloorFor("general"));
+            Assert.AreEqual(0L, _svc.FloorFor("nope"));
+            Assert.AreEqual(0L, _svc.FloorFor(null));
+            Assert.AreEqual(0L, _svc.FloorFor(""));
+        }
     }
 }
