@@ -1,136 +1,53 @@
-# OrderKit - CS_VNET8_SDKMSBUILD_CPM_MICRO
+# OrderKit
 
-One branch of the C# tool-evaluation corpus. Test **data**, not a product: tool
-execution is not part of the build, and evaluation happens later.
+OrderKit is a small C# order-management library: orders and order lines, pricing,
+risk scoring, stock allocation and reporting. It targets .NET 8 (`net8.0`) and is
+built and tested with the .NET SDK only.
+
+## Layout
+
+| Path | Contents |
+|---|---|
+| `src/OrderKit.Domain` | Order, order lines, statuses, stock ledger, SKU and customer-tier rules, batch processors |
+| `src/Services/OrderKit.Pricing` | Price calculation (tier discount, region, expedite fee, loyalty credit) and an async gateway |
+| `src/Services/OrderKit.Risk` | Risk scoring for hazmat, fragile and flagged orders |
+| `src/Services/OrderKit.Reporting` | Reports, SQL text builders, JSON export, audit fingerprints, report files |
+| `tests/OrderKit.Tests` | NUnit tests for every project |
+
+## Build and test
+
+```bash
+dotnet restore OrderKit.sln
+dotnet build OrderKit.sln -c Release
+dotnet test OrderKit.sln -c Release --collect:"XPlat Code Coverage"
+```
+
+`global.json` accepts any 8.0.x SDK from 8.0.100 (`rollForward: latestFeature`).
+Packages come from nuget.org only (`nuget.config`).
+
+## Packages
+
+Package versions are declared once in `Directory.Packages.props` (Central Package
+Management). Several pins are intentionally old so dependency audits have something
+to report: `Newtonsoft.Json` 12.0.3, `System.Text.Json` 8.0.0,
+`System.Text.RegularExpressions` 4.3.0 and `System.Data.SqlClient` 4.8.3.
+The test stack is NUnit 3.13.3 with `Microsoft.NET.Test.Sdk` 17.2.0,
+`NUnit3TestAdapter` 4.6.0 and `coverlet.collector` 6.0.2.
+
+When a tool injects its own `Directory.Build.props` (for example an analyzer bundle with
+versioned `PackageReference` items), Central Package Management switches itself off and the
+project files take the same versions from the properties in `Directory.Packages.props`.
+
+## Mutation testing
+
+`stryker-config.json` points Stryker.NET at the test project:
+
+```bash
+dotnet tool install -g dotnet-stryker
+dotnet stryker
+```
 
 ## Notes
 
-This branch keeps C# only. History includes feat, fix and chore commits so commit-history metrics have data.
-
-## Branch
-
-`CS_VNET8_SDKMSBUILD_CPM_MICRO`
-
-## Cell
-
-| Axis | Value |
-|---|---|
-| Bundler | SDK-style MSBuild |
-| Package manager | Central Package Management |
-| Architecture | Microservices |
-
-Projects:
-
-- `OrderKit.Domain` (`src/OrderKit.Domain`)
-- `OrderKit.Contracts` (`src/OrderKit.Contracts`)
-- `OrderKit.Pricing` (`src/Services/OrderKit.Pricing`)
-- `OrderKit.Risk` (`src/Services/OrderKit.Risk`)
-- `OrderKit.Reporting` (`src/Services/OrderKit.Reporting`)
-
-## Target framework
-
-`net8.0` - .NET 8
-
-The first family in this corpus that is STILL IN SUPPORT (LTS, to 10 November 2026), and the first whose target framework MATCHES the pinned SDK -- every earlier family was built by an SDK newer than its own target. packages.config remains dead, so six of the 24 cells stay impossible.
-
-## Language version
-
-C# 12.0, taken as the default of the target framework. `LangVersion` is deliberately
-never written to any project file, which is what keeps the family axis one number
-instead of two.
-
-The domain layer is written to that language subset exactly, and the lock is
-verified by execution rather than asserted:
-
-```
-csc -langversion:12.0   ->  clean
-csc -langversion:11.0   ->  error CS8025: Feature 'async function' is not available
-```
-
-## Supported tools
-
-6 of the 19 tools in the roster are expected to fire on this branch. The rest exit
-3 (cannot run here) or 4 (absent from this host), each with its reason in both
-`run.sh` and `trigger.yaml`.
-
-**A tool that does not fire is a result, not a failure.** What a family with *no*
-firing tools cannot do is distinguish "correctly detected nothing" from "the scan
-never ran" - so the source-level tools below are the built-in negative control:
-
-- Lizard
-- jscpd
-- Semgrep
-- PyDriller
-- git log --numstat
-
-| Tool | Status | Why |
-|---|---|---|
-| Lizard | active | Python tokeniser. Class B: own parser, never loads a compiler, so the TFM is irrelevant  |
-| jscpd | active | Node, own tokeniser. Class B. |
-| Dolos | not-installed | Node, tree-sitter C# grammar. Class B, and the sheet's declaration ('C# language-version |
-| Semgrep | active | Python, tree-sitter C# grammar. Class B. |
-| Opengrep | not-installed | Standalone binary, absent from this host. Class B when present. NOTE: the sheet declares |
-| Trivy | not-installed | Standalone Go binary, absent from this host. Class C: reads manifests/lockfiles. |
-| PyDriller | active | Python, reads git only. Class C: never touches the source language. |
-| git log --numstat | active | stdlib git. Class C. Counts Co-authored-by trailers, not just the author field -- the Ty |
-| diff-cover | skipped | Class C: reads Cobertura/OpenCover XML. No coverage report can be produced on this famil |
-| Roslyn analyzers (cognitive complexity) | not-installed | The sheet says 'Roslyn', which is a compiler platform, not a package. Resolved here to S |
-| Roslyn SAST analyzers | not-installed | The sheet says 'roslyn sast', also not a package. Resolved here to SecurityCodeScan + Mi |
-| Roslyn SemanticModel.AnalyzeDataFlow | not-installed | PROPOSED REPAIR, not in the source sheet. The sheet assigns Data Flow to Stryker.NET, a  |
-| dotnet list package --vulnerable | skipped | Requires PackageReference and an SDK-style project. Structurally impossible on the packa |
-| Coverlet | not-installed | STATUS CHANGED AT THIS FAMILY. net45 and net46 sat below netstandard2.0, whose .NET Fram |
-| AltCover | not-installed | Declares .NET Framework 2.0+ via a net20 recorder, so it is the one coverage tool in the |
-| MiniCover | skipped | MiniCover 3.10.0 declares .NET SDK 8.0/9.0/10.0 only -- verified against its own MiniCov |
-| Stryker.NET | skipped | Requires an SDK-style project and a modern SDK to run. Also: the sheet makes it primary  |
-| OpenTelemetry (.NET) + OTLP exporter | not-installed | STATUS CHANGED AT THIS FAMILY, for the same reason as Coverlet: netstandard2.0 clears at |
-| unilyze | active | Real tool (github.com/bigdra50/unilyze, MIT, v0.6.1) -- not absent. Verified: live cyclomatic/cognitive comp |
-## Build
-
-```bash
-dotnet build OrderKit.sln
-```
-
-Restore will not succeed on a host where NuGet is unreachable; see `dataset.json`
-`blockedHosts`.
-
-## Test
-
-```bash
-dotnet test OrderKit.sln
-```
-
-29 NUnit tests run. `Microsoft.NET.Test.Sdk` stays on 17.2.0: later test hosts need
-Newtonsoft.Json 13, and the planted 9.0.1 pin must not move.
-
-## Tool data folders
-
-This repo carries only `Tool Triggering (Synthetic Data)` from testable-platform/csharp-corpus's original per-branch task-data folders.
-
-| Folder | What it holds |
-|---|---|
-| `Tool Triggering (Synthetic Data)` | 19 folders of planted data, one per runner, written to trigger its tool at this family's language version. Each folder's `DATA.md` says what is planted and what a correct run should measure. |
-
-**This repo's own folder contains no project
-manifest** -- no `.csproj`, `.sln`, `packages.config` or lockfile. One there
-would make the platform treat the folder as a project of its own and run the
-whole roster against it.
-
-## Tool entry points
-
-```bash
-python3 "Tool Triggering (Synthetic Data)/tool_integration.py"            # banner
-python3 "Tool Triggering (Synthetic Data)/tool_integration.py" --verify   # every runner present and executable
-python3 "Tool Triggering (Synthetic Data)/tool_integration.py" --run      # run them all, compare to dataset.json
-python3 "Tool Triggering (Synthetic Data)/full_check.py"                  # cross-file consistency audit
-```
-
-## What is expected to fire
-
-`dataset.json` asserts the answer rather than describing it, so a platform that
-reports nothing for a given tool can be *proven* correct instead of assumed correct.
-Every runner's expected exit code is recorded there, and
-`tool_integration.py --run` exits **2** if any tool produces a result the dataset
-does not already record - a new finding, as distinct from a measurement.
-
-
-Last reviewed: 2026-11-14.
+Contact details, keys and tokens in the sources are documentation examples
+(`example.com` addresses, the public AWS example key pair), not real credentials.
