@@ -71,11 +71,11 @@ namespace OrderKit
                 {
                     if (flag != null)
                     {
-                        if (flag.StartsWith("hard-"))
+                        if (flag.StartsWith("hard-", StringComparison.Ordinal))
                         {
                             score += 20;
                         }
-                        else if (flag.StartsWith("soft-"))
+                        else if (flag.StartsWith("soft-", StringComparison.Ordinal))
                         {
                             score += 3;
                         }
