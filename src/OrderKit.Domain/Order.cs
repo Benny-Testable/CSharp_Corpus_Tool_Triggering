@@ -13,7 +13,7 @@ public sealed class Order : IPriceable
     public Order(string id, string customerTier)
     {
         Id = id ?? throw new ArgumentNullException(nameof(id));
-        _customerTier = customerTier ?? "standard";
+        _customerTier = string.IsNullOrWhiteSpace(customerTier) ? "standard" : customerTier;
     }
 
     public string Id { get; }
@@ -22,7 +22,7 @@ public sealed class Order : IPriceable
     public string CustomerTier
     {
         get => _customerTier;
-        set => _customerTier = value ?? "standard";
+        set => _customerTier = string.IsNullOrWhiteSpace(value) ? "standard" : value;
     }
 
     public IList<OrderLine> Lines => _lines.ToList();

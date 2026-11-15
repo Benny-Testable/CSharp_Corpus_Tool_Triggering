@@ -17,6 +17,15 @@ namespace OrderKit.Tests
         }
 
         [Test]
+        public void BlankCustomerTierFallsBackToStandard()
+        {
+            Assert.AreEqual("standard", new Order("A-3", "  ").CustomerTier);
+            Order o = new Order("A-4", "gold");
+            o.CustomerTier = "";
+            Assert.AreEqual("standard", o.CustomerTier);
+        }
+
+        [Test]
         public void BlankCategoryFallsBackToGeneral()
         {
             Assert.AreEqual("general", new OrderLine("SKU-9", 1, 100L, "  ").Category);
