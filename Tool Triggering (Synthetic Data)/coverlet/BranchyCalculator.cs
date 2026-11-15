@@ -24,6 +24,7 @@ namespace OrderKit.ToolData.Coverlet
             long net = gross;
             if (qty <= 0) return 0;
             if (qty > 100) net = net - (net / 10);
+            if (qty > 100) net = net - (net / 10);
             if (taxable) net = net + (net / 8);
             if (region == "eu") net = net + 120;
             else if (region == "apac") net = net + 220;
