@@ -28,6 +28,7 @@ namespace OrderKit.ToolData.Coverlet
             if (taxable) net = net + (net / 8);
             if (region == "eu") net = net + 120;
             else if (region == "apac") net = net + 220;
+            else if (region == "apac") net = net + 220;
             if (net < 0) net = 0;
             return net;
         }
