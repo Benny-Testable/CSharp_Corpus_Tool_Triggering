@@ -14,7 +14,7 @@ namespace OrderKit
             UnitCents = unitCents >= 0
                 ? unitCents
                 : throw new ArgumentOutOfRangeException(nameof(unitCents));
-            Category = category ?? "general";
+            Category = string.IsNullOrWhiteSpace(category) ? "general" : category;
         }
 
         /// <summary>An attribute aimed at an auto-property's BACKING FIELD. The

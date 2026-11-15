@@ -17,6 +17,13 @@ namespace OrderKit.Tests
         }
 
         [Test]
+        public void BlankCategoryFallsBackToGeneral()
+        {
+            Assert.AreEqual("general", new OrderLine("SKU-9", 1, 100L, "  ").Category);
+            Assert.AreEqual("general", new OrderLine("SKU-9", 1, 100L, null).Category);
+        }
+
+        [Test]
         public void SubtotalSumsLines()
         {
             Assert.AreEqual(2500L, Sample().SubtotalCents());
