@@ -87,7 +87,7 @@ never ran" - so the source-level tools below are the built-in negative control:
 ## Build
 
 ```bash
-./build.sh
+dotnet build OrderKit.sln
 ```
 
 Restore will not succeed on a host where NuGet is unreachable; see `dataset.json`
@@ -96,11 +96,11 @@ Restore will not succeed on a host where NuGet is unreachable; see `dataset.json
 ## Test
 
 ```bash
-./build.sh          # the test step is wired into the build
+dotnet test OrderKit.sln
 ```
 
-19 tests are declared. They are **not** executed in this corpus's build, because no
-test framework can be restored.
+29 NUnit tests run. `Microsoft.NET.Test.Sdk` stays on 17.2.0: later test hosts need
+Newtonsoft.Json 13, and the planted 9.0.1 pin must not move.
 
 ## Tool data folders
 
