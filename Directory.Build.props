@@ -5,6 +5,8 @@
     <Deterministic>true</Deterministic>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    <!-- every project carries a hand-written Properties/AssemblyInfo.cs; the SDK must not generate a second one (CS0579) -->
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <!-- versions live in Directory.Packages.props -->
   </PropertyGroup>
 
