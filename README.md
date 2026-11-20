@@ -53,3 +53,4 @@ Contact details, keys and tokens in the sources are documentation examples
 (`example.com` addresses, the public AWS example key pair), not real credentials.
 <!-- dummy PR 2026-11-19 07:28:52 -->
 <!-- dummy PR 2026-11-19 08:03:03 -->
+<!-- dummy PR 2026-11-20 08:57:18 -->
